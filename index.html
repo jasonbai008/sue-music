@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="./assets/images/logo.png" type="image/x-icon" />
     <title>Sue's Songs</title>
     <style>
+      /* ... 保持原有的CSS样式不变 ... */
       * {
         margin: 0;
         padding: 0;
@@ -36,12 +37,7 @@
       .container {
         max-width: 600px;
         margin: 0 auto;
-        /* background: rgba(255, 255, 255, 0.1); */
-        backdrop-filter: blur(15px);
-        /* border-radius: 20px; */
         padding: 40px 30px;
-        /* box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); */
-        /* border: 1px solid rgba(255, 255, 255, 0.3); */
       }
 
       .logo {
@@ -115,17 +111,14 @@
       }
 
       .icon {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
         margin: 0 15px;
-        opacity: 0.8;
-        transition: all 0.3s ease;
         filter: brightness(1.2);
       }
 
       .song-title {
         font-weight: 500;
-        transition: all 0.3s ease;
       }
 
       audio {
@@ -135,52 +128,21 @@
         opacity: 0.9;
       }
 
-      /* 动画类 */
-      .rythm-bass {
-        animation: bass 0.5s ease-in-out infinite;
+      /* 添加舞动元素的样式 */
+      .rythm-animation {
+        will-change: transform;
       }
 
-      .rythm-medium {
-        animation: medium 0.3s ease-in-out infinite;
+      /* 当前播放项的高亮样式 */
+      .item.playing {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
       }
 
-      .rythm-treble {
-        animation: treble 0.2s ease-in-out infinite;
-      }
-
-      @keyframes bass {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.15);
-        }
-      }
-
-      @keyframes medium {
-        0%,
-        100% {
-          transform: scale(1) rotate(0deg);
-          color: #fff;
-        }
-        50% {
-          transform: scale(1.08) rotate(3deg);
-          color: #ffeb3b;
-          text-shadow: 0 0 15px rgba(255, 235, 59, 0.6);
-        }
-      }
-
-      @keyframes treble {
-        0%,
-        100% {
-          transform: translateY(0) rotate(0deg);
-          filter: brightness(1.2);
-        }
-        50% {
-          transform: translateY(-5px) rotate(10deg);
-          filter: brightness(1.8) hue-rotate(45deg);
-        }
+      .item.playing h4 {
+        color: #fffacd;
+        text-shadow: 0 1px 8px rgba(255, 215, 0, 0.3);
       }
 
       /* 移动端适配 */
@@ -245,114 +207,381 @@
           margin: 0 8px;
         }
       }
+
+      /* 添加到原有的CSS中 */
+
+      /* Logo动画关键帧 */
+      @keyframes logoPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      @keyframes logoBounce {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        30% {
+          transform: scale(1.15);
+        }
+        50% {
+          transform: scale(0.95);
+        }
+        70% {
+          transform: scale(1.05);
+        }
+      }
+
+      @keyframes logoSpin {
+        0% {
+          transform: scale(1) rotate(0deg);
+        }
+        25% {
+          transform: scale(1.1) rotate(90deg);
+        }
+        50% {
+          transform: scale(1) rotate(180deg);
+        }
+        75% {
+          transform: scale(1.1) rotate(270deg);
+        }
+        100% {
+          transform: scale(1) rotate(360deg);
+        }
+      }
+
+      @keyframes logoWave {
+        0%,
+        100% {
+          transform: scale(1) translateY(0);
+          border-radius: 50%;
+        }
+        25% {
+          transform: scale(1.08) translateY(-3px);
+          border-radius: 45% 55% 45% 55%;
+        }
+        50% {
+          transform: scale(1.05) translateY(2px);
+          border-radius: 55% 45% 55% 45%;
+        }
+        75% {
+          transform: scale(1.1) translateY(-2px);
+          border-radius: 50% 50% 45% 55%;
+        }
+      }
+
+      /* Logo动画类 */
+      .logo.playing-pulse {
+        animation: logoPulse 0.8s ease-in-out infinite;
+      }
+
+      .logo.playing-bounce {
+        animation: logoBounce 1s ease-in-out infinite;
+      }
+
+      .logo.playing-spin {
+        animation: logoSpin 2s linear infinite;
+      }
+
+      .logo.playing-wave {
+        animation: logoWave 1.5s ease-in-out infinite;
+      }
+
+      /* 增强当前播放项的高亮样式 */
+      .item.playing {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .item.playing::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+        animation: shimmer 2s linear infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .item.playing h4 {
+        color: #fffacd;
+        text-shadow: 0 1px 8px rgba(255, 215, 0, 0.3);
+      }
+
+      /* 图标跳动动画 */
+      .item.playing .icon {
+        animation: iconBounce 0.6s ease-in-out infinite alternate;
+      }
+
+      @keyframes iconBounce {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-3px);
+        }
+      }
+
+      /* 音频控件自定义样式 */
+      audio {
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 8px;
+        opacity: 0.9;
+        transition: opacity 0.3s ease;
+      }
+
+      audio::-webkit-media-controls-panel {
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .item.playing audio {
+        opacity: 1;
+      }
+
+      /* 响应式调整动画 */
+      @media (max-width: 768px) {
+        .logo.playing-pulse,
+        .logo.playing-bounce,
+        .logo.playing-spin,
+        .logo.playing-wave {
+          animation-duration: 1.2s; /* 在移动端减慢动画速度 */
+        }
+
+        .item.playing::before {
+          height: 1px;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <img src="./assets/images/logo.png" alt="Logo" class="logo" id="logo" />
+      <img src="./assets/images/logo.png" alt="Logo" class="logo rythm-bass" id="logo" />
       <h1>Sue's Songs</h1>
 
-      <div class="item">
-        <h4>
-          <img src="./assets/images/icon.png" class="icon icon-0-0" />
-          <span class="song-title title-0">01 Office Lady</span>
-          <img src="./assets/images/icon.png" class="icon icon-0-1" />
+      <div class="item" data-audio-id="1">
+        <h4 class="song-header">
+          <img src="./assets/images/icon.png" class="icon left-icon" />
+          <span class="song-title">01 Office Lady</span>
+          <img src="./assets/images/icon.png" class="icon right-icon" />
         </h4>
-        <audio controls src="./assets/mp3/01 Office Lady.mp3"></audio>
+        <audio controls src="./assets/mp3/01 Office Lady.mp3" data-audio="1"></audio>
       </div>
 
-      <div class="item">
-        <h4>
-          <img src="./assets/images/icon.png" class="icon icon-1-0" />
-          <span class="song-title title-1">02 送给龚琳娜的歌</span>
-          <img src="./assets/images/icon.png" class="icon icon-1-1" />
+      <div class="item" data-audio-id="2">
+        <h4 class="song-header">
+          <img src="./assets/images/icon.png" class="icon left-icon" />
+          <span class="song-title">02 送给龚琳娜的歌</span>
+          <img src="./assets/images/icon.png" class="icon right-icon" />
         </h4>
-        <audio controls src="./assets/mp3/02 送给龚琳娜的歌.mp3"></audio>
+        <audio controls src="./assets/mp3/02 送给龚琳娜的歌.mp3" data-audio="2"></audio>
       </div>
 
-      <div class="item">
-        <h4>
-          <img src="./assets/images/icon.png" class="icon icon-2-0" />
-          <span class="song-title title-2">03 依然是你</span>
-          <img src="./assets/images/icon.png" class="icon icon-2-1" />
+      <div class="item" data-audio-id="3">
+        <h4 class="song-header">
+          <img src="./assets/images/icon.png" class="icon left-icon" />
+          <span class="song-title">03 依然是你</span>
+          <img src="./assets/images/icon.png" class="icon right-icon" />
         </h4>
-        <audio controls src="./assets/mp3/03 依然是你.mp3"></audio>
+        <audio controls src="./assets/mp3/03 依然是你.mp3" data-audio="3"></audio>
       </div>
     </div>
-
-    <script src="./assets/js/rythm.js"></script>
     <script>
-      // 初始化 Rythm.js
-      let rythm = new Rythm();
-      let currentRythm = null;
-
-      // 获取所有音频元素
+      // 获取所有音频元素和DOM元素
       const audioElements = document.querySelectorAll("audio");
+      const songItems = document.querySelectorAll(".item");
       const logo = document.getElementById("logo");
 
-      // 为每个音频添加事件监听器
-      audioElements.forEach((audio, index) => {
-        const item = audio.closest(".item");
-        const icons = item.querySelectorAll(".icon");
-        const title = item.querySelector(".song-title");
+      // 动画类型数组，可以选择不同的动画效果
+      const animationTypes = ["playing-pulse", "playing-bounce", "playing-spin", "playing-wave"];
+      let currentAnimation = 0;
 
-        // 为元素添加ID以便Rythm.js识别
-        logo.id = "logo";
-        title.id = "title-" + index;
-        icons.forEach((icon, iconIndex) => {
-          icon.id = "icon-" + index + "-" + iconIndex;
+      // 初始化：随机选择一种动画类型
+      function initLogoAnimation() {
+        currentAnimation = Math.floor(Math.random() * animationTypes.length);
+        updateLogoAnimation();
+      }
+
+      // 更新Logo动画
+      function updateLogoAnimation() {
+        // 移除所有动画类
+        animationTypes.forEach((type) => {
+          logo.classList.remove(type);
         });
 
-        // 播放事件
-        audio.addEventListener("play", () => {
-          // 暂停其他音频
-          audioElements.forEach((otherAudio, otherIndex) => {
-            if (otherIndex !== index && !otherAudio.paused) {
+        // 如果有音频正在播放，添加当前动画类
+        const isPlaying = Array.from(audioElements).some((audio) => !audio.paused);
+        if (isPlaying) {
+          logo.classList.add(animationTypes[currentAnimation]);
+        }
+      }
+
+      // 切换到下一种动画类型
+      function switchAnimationType() {
+        currentAnimation = (currentAnimation + 1) % animationTypes.length;
+        updateLogoAnimation();
+      }
+
+      // 为每个音频元素添加播放事件监听器
+      audioElements.forEach((audio) => {
+        audio.addEventListener("play", function () {
+          // 停止所有其他音频
+          audioElements.forEach((otherAudio) => {
+            if (otherAudio !== audio && !otherAudio.paused) {
               otherAudio.pause();
+              otherAudio.currentTime = 0;
+
+              // 移除其他歌曲的高亮状态
+              const otherItem = otherAudio.closest(".item");
+              if (otherItem) {
+                otherItem.classList.remove("playing");
+              }
             }
           });
 
-          // 停止当前的动画
-          if (currentRythm) {
-            currentRythm.stop();
+          // 为当前播放的歌曲添加高亮状态
+          const currentItem = audio.closest(".item");
+          if (currentItem) {
+            currentItem.classList.add("playing");
           }
 
-          // 创建新的 Rythm 实例
-          currentRythm = new Rythm();
-
-          // 绑定动画元素
-          currentRythm.addRythm("logo", "rythm-bass", 0, 10);
-          currentRythm.addRythm("title-" + index, "rythm-medium", 150, 300);
-          icons.forEach((icon, iconIndex) => {
-            currentRythm.addRythm("icon-" + index + "-" + iconIndex, "rythm-treble", 300, 500);
-          });
-
-          // 设置音频源并开始动画
-          currentRythm.setMusic(audio);
-          currentRythm.start();
+          // 启动Logo动画
+          updateLogoAnimation();
         });
 
-        // 暂停事件
-        audio.addEventListener("pause", () => {
-          if (currentRythm) {
-            currentRythm.stop();
+        // 添加暂停事件监听器
+        audio.addEventListener("pause", function () {
+          // 检查是否还有其他音频在播放
+          const anyPlaying = Array.from(audioElements).some((a) => !a.paused);
+
+          if (!anyPlaying) {
+            // 如果没有音频在播放，移除所有高亮状态
+            songItems.forEach((item) => {
+              item.classList.remove("playing");
+            });
+
+            // 停止Logo动画
+            animationTypes.forEach((type) => {
+              logo.classList.remove(type);
+            });
+          } else {
+            // 如果还有其他音频在播放，只移除当前项的高亮
+            const currentItem = audio.closest(".item");
+            if (currentItem && !audio.currentTime) {
+              currentItem.classList.remove("playing");
+            }
           }
         });
 
-        // 结束事件
-        audio.addEventListener("ended", () => {
-          if (currentRythm) {
-            currentRythm.stop();
+        // 添加结束事件监听器
+        audio.addEventListener("ended", function () {
+          const currentItem = audio.closest(".item");
+          if (currentItem) {
+            currentItem.classList.remove("playing");
+          }
+
+          // 检查是否还有其他音频在播放
+          const anyPlaying = Array.from(audioElements).some((a) => !a.paused);
+          if (!anyPlaying) {
+            // 停止Logo动画
+            animationTypes.forEach((type) => {
+              logo.classList.remove(type);
+            });
+          }
+        });
+
+        // 添加时间更新监听器，实现音频可视化效果
+        audio.addEventListener("timeupdate", function () {
+          const currentItem = audio.closest(".item");
+          if (currentItem && !audio.paused) {
+            // 根据音频当前时间轻微调整Logo动画强度
+            const progress = audio.currentTime / audio.duration;
+            logo.style.filter = `brightness(${1 + progress * 0.1}) drop-shadow(0 0 ${5 + progress * 5}px rgba(255,255,255,0.5))`;
           }
         });
       });
 
-      // 页面加载完成后的初始化
-      document.addEventListener("DOMContentLoaded", () => {
-        // 确保所有音频都是暂停状态
-        audioElements.forEach((audio) => {
-          audio.pause();
+      // 点击歌曲区域也可以切换播放
+      songItems.forEach((item) => {
+        item.addEventListener("click", function (e) {
+          // 如果点击的不是音频控件本身
+          if (!e.target.matches("audio, audio *")) {
+            const audio = this.querySelector("audio");
+            if (audio) {
+              if (audio.paused) {
+                audio.play();
+              } else {
+                audio.pause();
+              }
+            }
+          }
         });
+      });
+
+      // 双击Logo切换动画类型
+      logo.addEventListener("dblclick", function (e) {
+        e.preventDefault();
+        switchAnimationType();
+
+        // 添加切换反馈
+        logo.style.transform = "scale(1.2)";
+        setTimeout(() => {
+          logo.style.transform = "";
+        }, 300);
+      });
+
+      // 鼠标悬停在Logo上显示提示
+      logo.addEventListener("mouseenter", function () {
+        if (!this.title) {
+          this.title = "双击切换动画效果";
+        }
+      });
+
+      // 页面加载完成后初始化
+      document.addEventListener("DOMContentLoaded", function () {
+        initLogoAnimation();
+
+        // 为所有图标添加悬停效果
+        const icons = document.querySelectorAll(".icon");
+        icons.forEach((icon) => {
+          icon.addEventListener("mouseenter", function () {
+            this.style.transform = "rotate(15deg) scale(1.2)";
+          });
+
+          icon.addEventListener("mouseleave", function () {
+            this.style.transform = "";
+          });
+        });
+      });
+
+      // 监听页面可见性变化，当页面隐藏时暂停所有音频
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+          // 暂停所有音频
+          audioElements.forEach((audio) => {
+            if (!audio.paused) {
+              audio.pause();
+            }
+          });
+        }
       });
     </script>
   </body>
