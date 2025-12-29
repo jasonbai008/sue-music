@@ -1,588 +1,698 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="./assets/images/logo.png" type="image/x-icon" />
-    <title>Sue's Songs</title>
-    <style>
-      /* ... 保持原有的CSS样式不变 ... */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="./assets/images/logo.png" type="image/x-icon" />
+  <title>Sue's Songs</title>
+  <style>
+    /* ... 保持原有的CSS样式不变 ... */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Noto Serif SC", serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.08)"/><circle cx="10" cy="60" r="0.8" fill="rgba(255,255,255,0.06)"/><circle cx="90" cy="30" r="0.6" fill="rgba(255,255,255,0.04)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      pointer-events: none;
+      z-index: -1;
+    } */
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto 30px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: #fff;
+      letter-spacing: 2px;
+      position: relative;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+      border-radius: 1px;
+    }
+
+    .item {
+      margin-bottom: 35px;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .item:last-child {
+      margin-bottom: 0;
+    }
+
+    h4 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: #fff;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .icon {
+      width: 30px;
+      height: 30px;
+      margin: 0 15px;
+      filter: brightness(1.2);
+    }
+
+    .song-title {
+      font-weight: 500;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 8px;
+      opacity: 0.9;
+    }
+
+    /* 添加舞动元素的样式 */
+    .rythm-animation {
+      will-change: transform;
+    }
+
+    /* 当前播放项的高亮样式 */
+    .item.playing {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    .item.playing h4 {
+      color: #fffacd;
+      text-shadow: 0 1px 8px rgba(255, 215, 0, 0.3);
+    }
+
+    /* 移动端适配 */
+    @media (max-width: 768px) {
       body {
-        font-family: "Noto Serif SC", serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 20px;
-        color: #333;
-        line-height: 1.6;
-      }
-
-      body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.08)"/><circle cx="10" cy="60" r="0.8" fill="rgba(255,255,255,0.06)"/><circle cx="90" cy="30" r="0.6" fill="rgba(255,255,255,0.04)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-        pointer-events: none;
-        z-index: -1;
+        padding: 15px;
       }
 
       .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 40px 30px;
-      }
-
-      .logo {
-        display: block;
-        margin: 0 auto 30px;
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        transition: transform 0.3s ease;
-      }
-
-      .logo:hover {
-        transform: scale(1.05);
+        padding: 30px 20px;
+        border-radius: 15px;
       }
 
       h1 {
-        text-align: center;
-        margin-bottom: 40px;
-        font-size: 2.2rem;
-        font-weight: 300;
-        color: #fff;
-        letter-spacing: 2px;
-        position: relative;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        font-size: 1.8rem;
+        margin-bottom: 30px;
       }
 
-      h1::after {
-        content: "";
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
+      .logo {
         width: 60px;
-        height: 2px;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
-        border-radius: 1px;
+        height: 60px;
+        margin-bottom: 20px;
       }
 
       .item {
-        margin-bottom: 35px;
-        padding: 25px;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-
-      .item:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-        background: rgba(255, 255, 255, 0.2);
-      }
-
-      .item:last-child {
-        margin-bottom: 0;
+        padding: 20px 15px;
+        margin-bottom: 25px;
       }
 
       h4 {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 15px;
-        font-size: 1.1rem;
-        font-weight: 400;
-        color: #fff;
-        letter-spacing: 1px;
-        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+        font-size: 1rem;
       }
 
       .icon {
-        width: 30px;
-        height: 30px;
-        margin: 0 15px;
-        filter: brightness(1.2);
+        width: 16px;
+        height: 16px;
+        margin: 0 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 25px 15px;
       }
 
-      .song-title {
-        font-weight: 500;
+      h1 {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
       }
 
-      audio {
-        width: 100%;
-        margin-top: 10px;
-        border-radius: 8px;
-        opacity: 0.9;
+      .item {
+        padding: 15px 12px;
       }
 
-      /* 添加舞动元素的样式 */
-      .rythm-animation {
-        will-change: transform;
+      h4 {
+        font-size: 0.9rem;
       }
 
-      /* 当前播放项的高亮样式 */
-      .item.playing {
-        background: rgba(255, 255, 255, 0.25);
-        border-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+      .icon {
+        width: 14px;
+        height: 14px;
+        margin: 0 8px;
+      }
+    }
+
+    /* 添加到原有的CSS中 */
+
+    /* Logo动画关键帧 */
+    @keyframes logoPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
       }
 
-      .item.playing h4 {
-        color: #fffacd;
-        text-shadow: 0 1px 8px rgba(255, 215, 0, 0.3);
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    @keyframes logoBounce {
+
+      0%,
+      100% {
+        transform: scale(1);
       }
 
-      /* 移动端适配 */
-      @media (max-width: 768px) {
-        body {
-          padding: 15px;
-        }
-
-        .container {
-          padding: 30px 20px;
-          border-radius: 15px;
-        }
-
-        h1 {
-          font-size: 1.8rem;
-          margin-bottom: 30px;
-        }
-
-        .logo {
-          width: 60px;
-          height: 60px;
-          margin-bottom: 20px;
-        }
-
-        .item {
-          padding: 20px 15px;
-          margin-bottom: 25px;
-        }
-
-        h4 {
-          font-size: 1rem;
-        }
-
-        .icon {
-          width: 16px;
-          height: 16px;
-          margin: 0 10px;
-        }
+      30% {
+        transform: scale(1.15);
       }
 
-      @media (max-width: 480px) {
-        .container {
-          padding: 25px 15px;
-        }
-
-        h1 {
-          font-size: 1.5rem;
-          letter-spacing: 1px;
-        }
-
-        .item {
-          padding: 15px 12px;
-        }
-
-        h4 {
-          font-size: 0.9rem;
-        }
-
-        .icon {
-          width: 14px;
-          height: 14px;
-          margin: 0 8px;
-        }
+      50% {
+        transform: scale(0.95);
       }
 
-      /* 添加到原有的CSS中 */
+      70% {
+        transform: scale(1.05);
+      }
+    }
 
-      /* Logo动画关键帧 */
-      @keyframes logoPulse {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.1);
-        }
+    @keyframes logoSpin {
+      0% {
+        transform: scale(1) rotate(0deg);
       }
 
-      @keyframes logoBounce {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        30% {
-          transform: scale(1.15);
-        }
-        50% {
-          transform: scale(0.95);
-        }
-        70% {
-          transform: scale(1.05);
-        }
+      25% {
+        transform: scale(1.1) rotate(90deg);
       }
 
-      @keyframes logoSpin {
-        0% {
-          transform: scale(1) rotate(0deg);
-        }
-        25% {
-          transform: scale(1.1) rotate(90deg);
-        }
-        50% {
-          transform: scale(1) rotate(180deg);
-        }
-        75% {
-          transform: scale(1.1) rotate(270deg);
-        }
-        100% {
-          transform: scale(1) rotate(360deg);
-        }
+      50% {
+        transform: scale(1) rotate(180deg);
       }
 
-      @keyframes logoWave {
-        0%,
-        100% {
-          transform: scale(1) translateY(0);
-          border-radius: 50%;
-        }
-        25% {
-          transform: scale(1.08) translateY(-3px);
-          border-radius: 45% 55% 45% 55%;
-        }
-        50% {
-          transform: scale(1.05) translateY(2px);
-          border-radius: 55% 45% 55% 45%;
-        }
-        75% {
-          transform: scale(1.1) translateY(-2px);
-          border-radius: 50% 50% 45% 55%;
-        }
+      75% {
+        transform: scale(1.1) rotate(270deg);
       }
 
-      /* Logo动画类 */
-      .logo.playing-pulse {
-        animation: logoPulse 0.8s ease-in-out infinite;
+      100% {
+        transform: scale(1) rotate(360deg);
+      }
+    }
+
+    @keyframes logoWave {
+
+      0%,
+      100% {
+        transform: scale(1) translateY(0);
+        border-radius: 50%;
       }
 
-      .logo.playing-bounce {
-        animation: logoBounce 1s ease-in-out infinite;
+      25% {
+        transform: scale(1.08) translateY(-3px);
+        border-radius: 45% 55% 45% 55%;
       }
 
-      .logo.playing-spin {
-        animation: logoSpin 2s linear infinite;
+      50% {
+        transform: scale(1.05) translateY(2px);
+        border-radius: 55% 45% 55% 45%;
       }
 
+      75% {
+        transform: scale(1.1) translateY(-2px);
+        border-radius: 50% 50% 45% 55%;
+      }
+    }
+
+    /* Logo动画类 */
+    .logo.playing-pulse {
+      animation: logoPulse 0.8s ease-in-out infinite;
+    }
+
+    .logo.playing-bounce {
+      animation: logoBounce 1s ease-in-out infinite;
+    }
+
+    .logo.playing-spin {
+      animation: logoSpin 2s linear infinite;
+    }
+
+    .logo.playing-wave {
+      animation: logoWave 1.5s ease-in-out infinite;
+    }
+
+    /* 增强当前播放项的高亮样式 */
+    .item.playing {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .item.playing::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .item.playing h4 {
+      color: #fffacd;
+      text-shadow: 0 1px 8px rgba(255, 215, 0, 0.3);
+    }
+
+    /* 图标跳动动画 */
+    .item.playing .icon {
+      animation: iconBounce 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes iconBounce {
+      from {
+        transform: translateY(0);
+      }
+
+      to {
+        transform: translateY(-3px);
+      }
+    }
+
+    /* 音频控件自定义样式 */
+    audio {
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 8px;
+      opacity: 0.9;
+      transition: opacity 0.3s ease;
+    }
+
+    audio::-webkit-media-controls-panel {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .item.playing audio {
+      opacity: 1;
+    }
+
+    /* 响应式调整动画 */
+    @media (max-width: 768px) {
+
+      .logo.playing-pulse,
+      .logo.playing-bounce,
+      .logo.playing-spin,
       .logo.playing-wave {
-        animation: logoWave 1.5s ease-in-out infinite;
-      }
-
-      /* 增强当前播放项的高亮样式 */
-      .item.playing {
-        background: rgba(255, 255, 255, 0.25);
-        border-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
-        position: relative;
-        overflow: hidden;
+        animation-duration: 1.2s;
+        /* 在移动端减慢动画速度 */
       }
 
       .item.playing::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
-        animation: shimmer 2s linear infinite;
+        height: 1px;
+      }
+    }
+
+    /* 新增：美化版权声明样式 */
+    .copyright {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px 0;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      position: relative;
+    }
+
+    .copyright::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 1px;
+      background: linear-gradient(90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.3) 50%,
+          rgba(255, 255, 255, 0) 100%);
+    }
+
+    .copyright span {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+
+    .copyright-symbol {
+      vertical-align: sub;
+    }
+
+    .copyright-name {
+      font-weight: bold;
+    }
+
+    .copyright span:hover {
+      color: #fffacd;
+      background-color: rgba(255, 255, 255, 0.1);
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    }
+
+    /* 特别美化版权符号 */
+    .copyright::first-letter {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.9);
+      margin-right: 2px;
+    }
+
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .copyright {
+        margin-top: 30px;
+        padding: 15px 0;
+        font-size: 0.8rem;
       }
 
-      @keyframes shimmer {
-        0% {
-          transform: translateX(-100%);
-        }
-        100% {
-          transform: translateX(100%);
-        }
+      .copyright::before {
+        width: 80px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .copyright {
+        margin-top: 20px;
+        padding: 10px 0;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
       }
 
-      .item.playing h4 {
-        color: #fffacd;
-        text-shadow: 0 1px 8px rgba(255, 215, 0, 0.3);
+      .copyright::before {
+        width: 60px;
       }
+    }
+  </style>
+</head>
 
-      /* 图标跳动动画 */
-      .item.playing .icon {
-        animation: iconBounce 0.6s ease-in-out infinite alternate;
-      }
+<body>
+  <div class="container">
+    <img src="./assets/images/logo.png" alt="Logo" class="logo rythm-bass" id="logo" />
+    <h1>Sue's Songs</h1>
 
-      @keyframes iconBounce {
-        from {
-          transform: translateY(0);
-        }
-        to {
-          transform: translateY(-3px);
-        }
-      }
-
-      /* 音频控件自定义样式 */
-      audio {
-        width: 100%;
-        margin-top: 10px;
-        border-radius: 8px;
-        opacity: 0.9;
-        transition: opacity 0.3s ease;
-      }
-
-      audio::-webkit-media-controls-panel {
-        background: rgba(255, 255, 255, 0.9);
-      }
-
-      .item.playing audio {
-        opacity: 1;
-      }
-
-      /* 响应式调整动画 */
-      @media (max-width: 768px) {
-        .logo.playing-pulse,
-        .logo.playing-bounce,
-        .logo.playing-spin,
-        .logo.playing-wave {
-          animation-duration: 1.2s; /* 在移动端减慢动画速度 */
-        }
-
-        .item.playing::before {
-          height: 1px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <img src="./assets/images/logo.png" alt="Logo" class="logo rythm-bass" id="logo" />
-      <h1>Sue's Songs</h1>
-
-      <div class="item" data-audio-id="1">
-        <h4 class="song-header">
-          <img src="./assets/images/icon.png" class="icon left-icon" />
-          <span class="song-title">01 Office Lady</span>
-          <img src="./assets/images/icon.png" class="icon right-icon" />
-        </h4>
-        <audio controls src="./assets/mp3/01 Office Lady.mp3" data-audio="1"></audio>
-      </div>
-
-      <div class="item" data-audio-id="2">
-        <h4 class="song-header">
-          <img src="./assets/images/icon.png" class="icon left-icon" />
-          <span class="song-title">02 送给龚琳娜的歌</span>
-          <img src="./assets/images/icon.png" class="icon right-icon" />
-        </h4>
-        <audio controls src="./assets/mp3/02 送给龚琳娜的歌.mp3" data-audio="2"></audio>
-      </div>
-
-      <div class="item" data-audio-id="3">
-        <h4 class="song-header">
-          <img src="./assets/images/icon.png" class="icon left-icon" />
-          <span class="song-title">03 依然是你</span>
-          <img src="./assets/images/icon.png" class="icon right-icon" />
-        </h4>
-        <audio controls src="./assets/mp3/03 依然是你.mp3" data-audio="3"></audio>
-      </div>
+    <div class="item" data-audio-id="1">
+      <h4 class="song-header">
+        <img src="./assets/images/icon.png" class="icon left-icon" />
+        <span class="song-title">01 Office Lady</span>
+        <img src="./assets/images/icon.png" class="icon right-icon" />
+      </h4>
+      <audio controls src="./assets/mp3/01 Office Lady.mp3" data-audio="1"></audio>
     </div>
-    <script>
-      // 获取所有音频元素和DOM元素
-      const audioElements = document.querySelectorAll("audio");
-      const songItems = document.querySelectorAll(".item");
-      const logo = document.getElementById("logo");
 
-      // 动画类型数组，可以选择不同的动画效果
-      const animationTypes = ["playing-pulse", "playing-bounce", "playing-spin", "playing-wave"];
-      let currentAnimation = 0;
+    <div class="item" data-audio-id="2">
+      <h4 class="song-header">
+        <img src="./assets/images/icon.png" class="icon left-icon" />
+        <span class="song-title">02 送给龚琳娜的歌</span>
+        <img src="./assets/images/icon.png" class="icon right-icon" />
+      </h4>
+      <audio controls src="./assets/mp3/02 送给龚琳娜的歌.mp3" data-audio="2"></audio>
+    </div>
 
-      // 初始化：随机选择一种动画类型
-      function initLogoAnimation() {
-        currentAnimation = Math.floor(Math.random() * animationTypes.length);
-        updateLogoAnimation();
+    <div class="item" data-audio-id="3">
+      <h4 class="song-header">
+        <img src="./assets/images/icon.png" class="icon left-icon" />
+        <span class="song-title">03 依然是你</span>
+        <img src="./assets/images/icon.png" class="icon right-icon" />
+      </h4>
+      <audio controls src="./assets/mp3/03 依然是你.mp3" data-audio="3"></audio>
+    </div>
+
+    <p class="copyright"><span class="copyright-symbol">©</span>2025<span class="copyright-name"
+        onclick="alert('rong214325')">Rongrong
+        Zhao</span>. All rights reserved.</p>
+  </div>
+  <script>
+    // 获取所有音频元素和DOM元素
+    const audioElements = document.querySelectorAll("audio");
+    const songItems = document.querySelectorAll(".item");
+    const logo = document.getElementById("logo");
+
+    // 动画类型数组，可以选择不同的动画效果
+    const animationTypes = ["playing-pulse", "playing-bounce", "playing-spin", "playing-wave"];
+    let currentAnimation = 0;
+
+    // 初始化：随机选择一种动画类型
+    function initLogoAnimation() {
+      currentAnimation = Math.floor(Math.random() * animationTypes.length);
+      updateLogoAnimation();
+    }
+
+    // 更新Logo动画
+    function updateLogoAnimation() {
+      // 移除所有动画类
+      animationTypes.forEach((type) => {
+        logo.classList.remove(type);
+      });
+
+      // 如果有音频正在播放，添加当前动画类
+      const isPlaying = Array.from(audioElements).some((audio) => !audio.paused);
+      if (isPlaying) {
+        logo.classList.add(animationTypes[currentAnimation]);
       }
+    }
 
-      // 更新Logo动画
-      function updateLogoAnimation() {
-        // 移除所有动画类
-        animationTypes.forEach((type) => {
-          logo.classList.remove(type);
+    // 切换到下一种动画类型
+    function switchAnimationType() {
+      currentAnimation = (currentAnimation + 1) % animationTypes.length;
+      updateLogoAnimation();
+    }
+
+    // 为每个音频元素添加播放事件监听器
+    audioElements.forEach((audio) => {
+      audio.addEventListener("play", function () {
+        // 停止所有其他音频
+        audioElements.forEach((otherAudio) => {
+          if (otherAudio !== audio && !otherAudio.paused) {
+            otherAudio.pause();
+            otherAudio.currentTime = 0;
+
+            // 移除其他歌曲的高亮状态
+            const otherItem = otherAudio.closest(".item");
+            if (otherItem) {
+              otherItem.classList.remove("playing");
+            }
+          }
         });
 
-        // 如果有音频正在播放，添加当前动画类
-        const isPlaying = Array.from(audioElements).some((audio) => !audio.paused);
-        if (isPlaying) {
-          logo.classList.add(animationTypes[currentAnimation]);
+        // 为当前播放的歌曲添加高亮状态
+        const currentItem = audio.closest(".item");
+        if (currentItem) {
+          currentItem.classList.add("playing");
         }
-      }
 
-      // 切换到下一种动画类型
-      function switchAnimationType() {
-        currentAnimation = (currentAnimation + 1) % animationTypes.length;
+        // 启动Logo动画
         updateLogoAnimation();
-      }
+      });
 
-      // 为每个音频元素添加播放事件监听器
-      audioElements.forEach((audio) => {
-        audio.addEventListener("play", function () {
-          // 停止所有其他音频
-          audioElements.forEach((otherAudio) => {
-            if (otherAudio !== audio && !otherAudio.paused) {
-              otherAudio.pause();
-              otherAudio.currentTime = 0;
+      // 添加暂停事件监听器
+      audio.addEventListener("pause", function () {
+        // 检查是否还有其他音频在播放
+        const anyPlaying = Array.from(audioElements).some((a) => !a.paused);
 
-              // 移除其他歌曲的高亮状态
-              const otherItem = otherAudio.closest(".item");
-              if (otherItem) {
-                otherItem.classList.remove("playing");
-              }
-            }
+        if (!anyPlaying) {
+          // 如果没有音频在播放，移除所有高亮状态
+          songItems.forEach((item) => {
+            item.classList.remove("playing");
           });
 
-          // 为当前播放的歌曲添加高亮状态
+          // 停止Logo动画
+          animationTypes.forEach((type) => {
+            logo.classList.remove(type);
+          });
+        } else {
+          // 如果还有其他音频在播放，只移除当前项的高亮
           const currentItem = audio.closest(".item");
-          if (currentItem) {
-            currentItem.classList.add("playing");
-          }
-
-          // 启动Logo动画
-          updateLogoAnimation();
-        });
-
-        // 添加暂停事件监听器
-        audio.addEventListener("pause", function () {
-          // 检查是否还有其他音频在播放
-          const anyPlaying = Array.from(audioElements).some((a) => !a.paused);
-
-          if (!anyPlaying) {
-            // 如果没有音频在播放，移除所有高亮状态
-            songItems.forEach((item) => {
-              item.classList.remove("playing");
-            });
-
-            // 停止Logo动画
-            animationTypes.forEach((type) => {
-              logo.classList.remove(type);
-            });
-          } else {
-            // 如果还有其他音频在播放，只移除当前项的高亮
-            const currentItem = audio.closest(".item");
-            if (currentItem && !audio.currentTime) {
-              currentItem.classList.remove("playing");
-            }
-          }
-        });
-
-        // 添加结束事件监听器
-        audio.addEventListener("ended", function () {
-          const currentItem = audio.closest(".item");
-          if (currentItem) {
+          if (currentItem && !audio.currentTime) {
             currentItem.classList.remove("playing");
           }
-
-          // 检查是否还有其他音频在播放
-          const anyPlaying = Array.from(audioElements).some((a) => !a.paused);
-          if (!anyPlaying) {
-            // 停止Logo动画
-            animationTypes.forEach((type) => {
-              logo.classList.remove(type);
-            });
-          }
-        });
-
-        // 添加时间更新监听器，实现音频可视化效果
-        audio.addEventListener("timeupdate", function () {
-          const currentItem = audio.closest(".item");
-          if (currentItem && !audio.paused) {
-            // 根据音频当前时间轻微调整Logo动画强度
-            const progress = audio.currentTime / audio.duration;
-            logo.style.filter = `brightness(${1 + progress * 0.1}) drop-shadow(0 0 ${5 + progress * 5}px rgba(255,255,255,0.5))`;
-          }
-        });
-      });
-
-      // 点击歌曲区域也可以切换播放
-      songItems.forEach((item) => {
-        item.addEventListener("click", function (e) {
-          // 如果点击的不是音频控件本身
-          if (!e.target.matches("audio, audio *")) {
-            const audio = this.querySelector("audio");
-            if (audio) {
-              if (audio.paused) {
-                audio.play();
-              } else {
-                audio.pause();
-              }
-            }
-          }
-        });
-      });
-
-      // 双击Logo切换动画类型
-      logo.addEventListener("dblclick", function (e) {
-        e.preventDefault();
-        switchAnimationType();
-
-        // 添加切换反馈
-        logo.style.transform = "scale(1.2)";
-        setTimeout(() => {
-          logo.style.transform = "";
-        }, 300);
-      });
-
-      // 鼠标悬停在Logo上显示提示
-      logo.addEventListener("mouseenter", function () {
-        if (!this.title) {
-          this.title = "双击切换动画效果";
         }
       });
 
-      // 页面加载完成后初始化
-      document.addEventListener("DOMContentLoaded", function () {
-        initLogoAnimation();
+      // 添加结束事件监听器
+      audio.addEventListener("ended", function () {
+        const currentItem = audio.closest(".item");
+        if (currentItem) {
+          currentItem.classList.remove("playing");
+        }
 
-        // 为所有图标添加悬停效果
-        const icons = document.querySelectorAll(".icon");
-        icons.forEach((icon) => {
-          icon.addEventListener("mouseenter", function () {
-            this.style.transform = "rotate(15deg) scale(1.2)";
+        // 检查是否还有其他音频在播放
+        const anyPlaying = Array.from(audioElements).some((a) => !a.paused);
+        if (!anyPlaying) {
+          // 停止Logo动画
+          animationTypes.forEach((type) => {
+            logo.classList.remove(type);
           });
-
-          icon.addEventListener("mouseleave", function () {
-            this.style.transform = "";
-          });
-        });
+        }
       });
 
-      // 监听页面可见性变化，当页面隐藏时暂停所有音频
-      document.addEventListener("visibilitychange", function () {
-        if (document.hidden) {
-          // 暂停所有音频
-          audioElements.forEach((audio) => {
-            if (!audio.paused) {
+      // 添加时间更新监听器，实现音频可视化效果
+      audio.addEventListener("timeupdate", function () {
+        const currentItem = audio.closest(".item");
+        if (currentItem && !audio.paused) {
+          // 根据音频当前时间轻微调整Logo动画强度
+          const progress = audio.currentTime / audio.duration;
+          logo.style.filter = `brightness(${1 + progress * 0.1}) drop-shadow(0 0 ${5 + progress * 5}px rgba(255,255,255,0.5))`;
+        }
+      });
+    });
+
+    // 点击歌曲区域也可以切换播放
+    songItems.forEach((item) => {
+      item.addEventListener("click", function (e) {
+        // 如果点击的不是音频控件本身
+        if (!e.target.matches("audio, audio *")) {
+          const audio = this.querySelector("audio");
+          if (audio) {
+            if (audio.paused) {
+              audio.play();
+            } else {
               audio.pause();
             }
-          });
+          }
         }
       });
-    </script>
-  </body>
+    });
+
+    // 双击Logo切换动画类型
+    logo.addEventListener("dblclick", function (e) {
+      e.preventDefault();
+      switchAnimationType();
+
+      // 添加切换反馈
+      logo.style.transform = "scale(1.2)";
+      setTimeout(() => {
+        logo.style.transform = "";
+      }, 300);
+    });
+
+    // 鼠标悬停在Logo上显示提示
+    logo.addEventListener("mouseenter", function () {
+      if (!this.title) {
+        this.title = "双击切换动画效果";
+      }
+    });
+
+    // 页面加载完成后初始化
+    document.addEventListener("DOMContentLoaded", function () {
+      initLogoAnimation();
+
+      // 为所有图标添加悬停效果
+      const icons = document.querySelectorAll(".icon");
+      icons.forEach((icon) => {
+        icon.addEventListener("mouseenter", function () {
+          this.style.transform = "rotate(15deg) scale(1.2)";
+        });
+
+        icon.addEventListener("mouseleave", function () {
+          this.style.transform = "";
+        });
+      });
+    });
+
+    // 监听页面可见性变化，当页面隐藏时暂停所有音频
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) {
+        // 暂停所有音频
+        audioElements.forEach((audio) => {
+          if (!audio.paused) {
+            audio.pause();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+
 </html>
